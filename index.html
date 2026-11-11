@@ -1,0 +1,1548 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Galponcars Automotores - Sistema Completo</title>
+<style>
+:root{
+  --bg:#000000; --surface:#111111; --surface-2:#1b1b1b; --ink:#f7f7f7; --muted:#a6a6a6; --line:#2c2c2c;
+  --accent:#ef3e34; --red-solid:#d4261d; --accent-ink:#ffffff; --accent-soft:#2b1210;
+  --ok:#6ed39a; --ok-bg:#10301e; --warn:#f0c15a; --warn-bg:#3a2c0c; --paint:#c3a2f2; --paint-bg:#2b1f42;
+  --hold:#6fd0dc; --hold-bg:#0e3138; --danger:#ff9087; --danger-bg:#3b1512;
+  --plate-bg:#f7f7f3; --plate-ink:#12161a; --plate-band:#c8201a;
+  font-family: system-ui, -apple-system, sans-serif; color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); padding:24px; max-width:1150px; margin:0 auto; font-size:15px; line-height:1.4}
+h1,h2,h3,p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.brandbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:2px solid var(--line);margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+.brand-container{display:flex;align-items:center;gap:16px;}
+.brand-logo-img{max-height:50px;max-width:200px;object-fit:contain;background:#000;}
+
+.doors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:24px}
+.door{display:flex;flex-direction:column;gap:12px;padding:22px;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;text-decoration:none;color:inherit;transition:border-color .15s}
+.door:hover{border-color:var(--accent)}
+.door h2{font-size:26px;text-transform:uppercase}
+.door p{color:var(--muted);font-size:14px}
+
+.status-bar{background:var(--surface);border:1.5px solid var(--line);padding:10px 16px;border-radius:8px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;font-size:14px;flex-wrap:wrap;gap:10px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:6px 14px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);font-weight:500}
+.btn-primary{background:var(--red-solid);border-color:var(--red-solid);color:var(--accent-ink);font-weight:600}
+.btn-whatsapp{background:#128c7e;border-color:#128c7e;color:#fff;font-weight:600;text-decoration:none;padding:4px 10px;font-size:12px;border-radius:6px;display:inline-flex;align-items:center;gap:4px;}
+.btn:hover{border-color:var(--accent)}
+.section-view{display:none}
+.section-view.active{display:block}
+.grid-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:16px}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld label{font-size:13px;color:var(--muted);font-weight:500}
+.fld input,.fld select,.fld textarea{width:100%;min-height:38px;padding:8px 11px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg)}
+.card{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:20px;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;margin-top:12px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);font-size:14px;vertical-align:middle}
+th{color:var(--muted);font-weight:600}
+
+.tabs-inline{display:flex;gap:8px;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:20px;flex-wrap:wrap;}
+.tab-btn{background:var(--surface);border:1.5px solid var(--line);color:var(--muted);padding:8px 16px;font-weight:600;border-radius:8px}
+.tab-btn.active{background:var(--red-solid);border-color:var(--red-solid);color:var(--accent-ink)}
+
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.st-listo{background:var(--ok-bg);color:var(--ok)}
+.st-taller{background:var(--warn-bg);color:var(--warn)}
+.st-pintor{background:var(--paint-bg);color:var(--paint)}
+.st-senado{background:var(--hold-bg);color:var(--hold)}
+.st-vendido{background:var(--surface-2);color:var(--muted)}
+
+.plate{display:inline-flex;flex-direction:column;border:1px solid var(--plate-ink);border-radius:4px;overflow:hidden;background:var(--plate-bg);color:var(--plate-ink);line-height:1}
+.plate i{background:var(--plate-band);color:#fff;font-size:7px;letter-spacing:1px;text-align:center;padding:1px 6px;font-style:normal;font-weight:700}
+.plate b{font-family:monospace;font-size:14px;letter-spacing:1px;padding:2px 6px;text-align:center}
+
+.thumb-preview{width:60px;height:45px;border-radius:6px;object-fit:cover;background:var(--surface-2);border:1px solid var(--line)}
+.doc-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;background:var(--surface-2);border-radius:4px;font-size:12px;color:var(--ink);text-decoration:none;border:1px solid var(--line)}
+
+.chart-bar-container{display:flex;align-items:flex-end;gap:16px;height:140px;padding-top:20px;margin-top:12px;border-bottom:1px solid var(--line)}
+.chart-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.chart-bar{width:100%;max-width:45px;background:var(--accent);border-radius:4px 4px 0 0;transition:height .3s}
+
+/* ESTILOS PARA LA IMPRESIÓN / DESCARGA EN PDF */
+@media print {
+  body { background: #ffffff !important; color: #121212 !important; padding: 0 !important; font-size: 13px !important; }
+  .brandbar, .status-bar, .doors, .section-view:not(.active), .btn, .tabs-inline, input, select, button { display: none !important; }
+  .section-view.active { display: block !important; }
+  .card { background: #ffffff !important; border: 1px solid #ccc !important; box-shadow: none !important; margin-bottom: 20px !important; color: #121212 !important; }
+  th { color: #555 !important; border-bottom: 2px solid #333 !important; }
+  td { border-bottom: 1px solid #ddd !important; color: #121212 !important; }
+  .pill { border: 1px solid #999 !important; background: #eee !important; color: #000 !important; }
+  h2, h3 { color: #000 !important; }
+  #pdf-report-header { display: flex !important; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; align-items: center; justify-content: space-between; }
+}
+#pdf-report-header { display: none; }
+</style>
+</head>
+<body>
+
+<div class="brandbar">
+  <div class="brand-container">
+    <img class="brand-logo-img" src="data:image/jpeg;base64,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" alt="Galponcars Automotores">
+  </div>
+  <div style="font-size:13px; color:var(--muted);">Sistema Integral de Gestión</div>
+</div>
+
+<div class="status-bar">
+  <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+    <span>Estado: <b style="color:var(--ok);">Operativo</b></span>
+    <button class="btn" style="padding:3px 8px; font-size:12px; background:var(--surface-2);" onclick="exportarRespaldo()">📥 Exportar Respaldo</button>
+    <label class="btn" style="padding:3px 8px; font-size:12px; background:var(--surface-2); cursor:pointer;">
+      📤 Importar Respaldo <input type="file" accept=".json" style="display:none;" onchange="importarRespaldo(event)">
+    </label>
+  </div>
+  <button class="btn" style="padding:4px 10px; font-size:12px; color:var(--danger);" onclick="if(confirm('¿Reiniciar todos los datos locales?')){localStorage.clear(); location.reload();}">Reiniciar Sistema</button>
+</div>
+
+<!-- MENÚ PRINCIPAL -->
+<div id="view-home" class="section-view active">
+  <div style="text-align:center; margin-bottom:28px;">
+    <div style="margin-bottom:14px; display:inline-block; border:1px solid var(--line); padding:10px; border-radius:12px; background:var(--surface);">
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wgARCACgAfQDASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAQUGAv/EABcBAQEBAQAAAAAAAAAAAAAAAAABAgP/2gAMAwEAAhADEAAAAuUAAAAAAAAAAAAAAZGGbJVXMlJbjIGRgAAAAAAAAAAAEgIwAAAAAAAAAAAM2d2c9udpqye7pKJ1tfksnZzWJjQT8eO1q8raNwm1o1m92Jx2OngOfWa5gAAAAAAAEgIwAAAAAAGRhc2ZoHRDnc9Bk0+6htli/DfODp7+kaxsfZq7k+wOgarycm22DV42mDW7qH0arO4jLuq9yE0+mrG/q1N8avX9XEcoAAAAACQEYAAAAAE0WxL8vPRm31XgZkjklz68+5vLz5WfNbyXFEX/ADSF1Swl5SwXFMXvNMlpVWWlUWPERJY8E6KXmFdJ75i2VAAAAAASAjAAAAAeupOUz00xySaIY7HQGtzjpDmwDtjiXTynJs9Scq6eY5Ja2BpXWcoMdFzxh1Xg5h1nPFQ605PG21JnHU+TmM9PTNG22zOWdRXOfAAAABICMAAAAF+9pOmNJ0EMhqJYtger2gtmg6fTbc5rHTeTm+64XfFmXk8lnb8/0hzdreeiv40+xPdvRXzYaHec2dDz3Sejn5d9zhc20NE3/Gb2obuKtz51+u0+3K2z028I61umaMAAAAEgIwAAAAAAM4DOBllHnOcGM+/SwvY8Z9DxkTGc5Xzj16PGJfB5SeDCXB4xJkjevRHj15QKAAAAAAAkBGAAAAAACXYaoXKecGw9UcY7Wq2JLmb3Q9r7mpyM2JaWG7ElTybCpHlLVbx5S6qYWWet5TYZ16buqntZPVWS59Vs+bz2kNBcgAAAAAASAjAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABICMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgP//aAAwDAQACAAMAAAAhAAAAAAAAAAAAAAAIIIAMAAAAAAAAAAAAAAAAAAAAAAAEE0wYc8IQ0cIIAAAAAAAAAAAAAAAAM0kI0MIYk4Qo44U8IAAAAAAAAAAAAAkYQrDZJQwn3+PNNfPc4AAAAAAAAAAAAcgIcAAQwY88gM0ocIQk0wAAAAAAAAAAAgYEIUUQIQoIIQUA0wMcUEAAAAAAAAAAAQwgAHrj6inuWa23XCWwwwAAAAAAAAAAAAAc0P3qzgUk6s7mogC8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIAAwAAABDzzzzzzzzzzzzzzDzzTDTzzzzzzzzzzwDzzzzzzzzzzzygiigCyhQzTTzzzzzzzwDzzzzzzzTjQxAwzyyARQ3VXRiDzzzzzwDzzzzzzwDzjzHI4KVT68EZDIzjzzzzzwDzzzzzizxzjzxTzxzjzzTTwgBxTzzzzwDzzzzyBCCzBTyDyCjRTAhxDSSCDzzzzwDzzzzzxyywKIEoKZbUmqgwWPwxzzzzzwDzzzzzzwgDZIid0RftZKUqkgTzzzzzzwDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzwDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzwD/xAAkEQACAQMEAgIDAAAAAAAAAAAAARECAxITIUFRQGAUIkJSYf/aAAgBAgEBPwD1WReG8uBq7xAle7Rhd7HbuP8AIVqvmo0qv2NH+s0l2aS7NKk06RUroSXqcqYJRnT2ZIyUDfJkh1IVSYqkzOnszpMkLfw9KuZkxqUxyOysUuh295RVZmR2m1i3sU2sRW9mmK19Uh25aZ8fZKR2K5bQ7TmShOlQ/Sv/xAAuEQABAwIEBAQGAwAAAAAAAAABAAIDBBEFEjFBEyFRkRRCYKEVIkBDgfBSYWP/2gAIAQMBAT8A9I2VlYrKVlPRWt9HHwvOozQ+cO9kZMOGjXHsjUUIHKM902rpW/Zv+SnVtMdIR3K8fENIm+6+I/5t7L4g7ZjeyOISbNHYLx0v9dgvGTdUaiQ7ovLtfSfDdbNbkiwiyFNKdGlcJ98tlwn5stuaDS42CETybAJsL3HKBzToJGmzgnRPbqEaeUC+VCnlIuGoQSO0aiCOR+jGIQBnCynLZeIheGiQH5UzEXCV7/5XUdYRGWOJv1UOJiLLva/MqOvijfxmt+f2/CmrxLpdvM6J9cS9jh5d+qOIEzuk2Psm1oY0tuXX6o4u0yOdl2sm4nDw2tcDcD93UeIRhuV3X93VTK2WQubyHor/xABUEAABAwICAwgKDAsGBwAAAAABAgMEAAUREhMhMQYUFSJBUVKRECMwMkBCU1RhcSAkUGJzgZKTorHB0RYlMzRDVYKDoeHwNmNlcqTxJjVERaOy4v/aAAgBAQABPwL3eRs8PAJ2Chb5ihqiSD+7NcFzvM3/AJs1wXP80f8AkVwbO8zkfNmnYkhr8qw6j/MgjwtGzwtplx5WVlCnFcyRjUfc3JUM0pbcdHpOJretiianX3JTnRRsPV99MrTnwhWBRHSdAR9dGfck6nVWyN711zX9dOzpY7+8QW/ghnqEZ81ClRrulQGo+1sKci3ZCFKN1TlSMT2kUJk1f5K+Q/20hP2UmdckDVOtT5+E/wBqTJu6ji7b47zfvFjX/GjIjKT7asDjaOdDf+1Zdz0jDjPxjza/50dz8d9R3jcmXDyI1H6qkbnrgzjg2HQOVs406y4yrK8hSFcyhhWHgiNnhMKDImryx2yr08gpNpgW5IVdJAWvySK35KLB3hGZgRfKvav4U/Khd9KekXBzmxyIrht5vVDaYij3iNfx40/MkP8A5Z9xz/Mrs2llNusyM+rKjSL+urjimzycx1hhX1dkHDZTdwmNd5KeHozmod0NxY0DqWDLHe6ZGKXPR66ckwytSJlt0TuOCiyspw/ZqPIZT+Y3aRHw2NyE4j7qEu5aHtsaLcWMNZZVjj/XqpwWSU4UvNPQXvSMKe3NuKRpIMhqQ3UqFJinCQytHpI1eBI2eDw4T8xeWO2Venkrg2Ba057m9pXuRlFMKuFxbCIqBAiYd9hrPqpiztRm1FhXto/p3BnIq5qk78cRMcK3UHA4+xtMffVxjskYhStfq5au6ibYpIOBeKWx+0rD6qvSstklH3mHscaRlvLGU4JuDY1Hyw++lJKVEKBBG0U2tbawptRSrnBqA7cXGcZ+iMIeNLRj1cpqbJaTNU5bAthvYMFVF3STGtTwQ+j3wrfFknDt7CojnOjZ/XxU5udLnGgymXk+ujueufm+P7afvo7n7mB+bfTT99PMuMryvIUhXMoYd1Rs8Bi2yZKw0DC1A+NhgOuk7mn0ozyn2WUcvLhXBlnYT7Yuec/3X9Gh+DrI/TyOv+Vb73P+YyOv/wCq3/Yf1e7/AF8dS78tYDFvQmKzs9NMRIsZGlEuDJmHxnnuKn76tchLTS9/XKI46pWYKS6OqhcoR/6uP86KukITJ7z/AAhbwlZ1dt5K4MaHfXKJ8RNCFE8a5ND92o0mFbvGugH7hVbzt2v8af6dVWlVqt8rTGap04YDtJGFTbzAkFjtjoDLqXBgjvsKm36BLjrYWmUG1dED76/En+JfQr8S/wCI/QrG0dGf1prPafJTT61prfNqT/291f8AmepM+3oWlSLXlI1/nCqk3iO86XeDGdIeVasa4aeT+bx4kc9JtrXS5rTywuYiTIUORT2A+qt+239Uf6lVPuR1ntUdTf7zGj6Kgx5T7ntNLhVzp1YU1bLoBml3RUdPpdJpL0OLhpb5JWv3qsw+o1urUyu3w1pJWtWtK+Upw7qjZ3aPHdkLyMNqcV70VH3PZE6S5yEx2/X9tcIWi36oUbTudNX86l7oZ8jEBwMp5mx9tOOrdXmdWpaudRxrDGgy4fEV1Vvd3oK6q3o90DW83uhW8nujW8HPRXB6+dNcHuDxk0ICuVYreKBteFb0a84TW9WfOE1oI4/TVkieVNZYflFV7U51ms0TouVpIfk10XY3IyflVpmPN/pVpmuRgfKrfI5GW631/ctdVGQeg38mtMr3nyRReUeh8kUddbnLkyxHdiSFloOa0uDkpyxb7VnF2Q+ec6/tobmQMdLPaR8X863TJDFpgMI7YkfpfUO6o2d2ZvUxhrRsKQ2n3rYp59x9eZ5alq98fYAkbK07vlFddCQ75RXXW/X+n/CjMePj1vh3yiuutO75RXXRWo7VGsaxrHwVc59cJERSgWUHEDDuqNnu+jZ3NtBcWlCBipWoULdbbSylVyOlePi/yrhiz46raMPg001HtF3BTGSWHvVhUuOqNIcZc75Bw7Frhw4MJjhBttTz6tWdIOFX2BvCepA/JK4yPV2ILDKtysl1TTZdBOCsuv2Fzdt1tSxpbe0vSDkbTXDVp/VaPm00/Ht9ztT8mIxoXGQTqGHJQGJAG003a7fbI6Hbqc7p8SuF7ONlsGHwaaZas127WyjQPc2yrjDXBlKYc2jYecVuUabfuZS82hadGTgoY1erWxKYVItoSFtEpWhIw2di8sNN7n7e4hpCXFZcVBOs8WgMSANtN2uBbIyXbqc7p8SuF7Pjqtgw+DTTTdlup0bKSw8dmrCrlCXAlKZc14bDzjsWiHEhW5t+4ttqU+oYZ044VujgbxnnIMGXOMn0djcy1HNqlPSGGndGSeMkHkrhq0/qtHzaaF5tBOu2IA+DTW6iAzDkNKjjKh0d7zVuetybjLUl0kNoGJw5aXPskVRbRC0mHKU4/XQu1mWcF24J9Taavdtiphom289pUdae5o2dzsWAu8XNszit1wULuSrHKUjLVsVETJxnoK2cNgq3tWOc/oo8V3NhjiSr763RR2olzU0wnKjAasca3NQN+TwpY7U1xlen0Vf41xnTipuMvRI1I2ddT4j9wsad8NFMxrn5exb/AOx0r1n7PYXmFElojb8lBjKnVioDHrrgW0frRHziakSbfbLU9GhvaZx0EajjyVbSBcYpV3ulTj11uySvhFCjjkyauxbQsz4+jxz5xsrdmU8It4bdHr663G/82PwR+ymrk5br1KUNbZdVmT8dX62tvs8I2/jNq1rSKvv9mrZ+z/61bSBcIxV3odTj11uySvhBtRxyZNXYjNuuvoRHxLp73Cri1KZfyzs2lw8ZWbVVggb/AJ6UqHakcZdbo40+dLCWoy9A2ME7KVDkXCwaGW0Uymu9x5aIw21uUycDzNN+TzHN6stY7meif/JUQbnnH0JZQM52Zs321uuW8bgEvABtI7XhzVYnJjUorgtaU4cZPopV7tzxO/LaM/LgAaDu517vmnGev7KvVpaixUSobukYVz9zRs7mklJBG0U1fIcxhLd2YxUPHArDc10lfToXuBDKG7cxlSVDOsjkrdFJal3NTsdWdsga8Kbuce3WUNQXQuWrWo5TX4QXPzn6Cfuq27opQlo367nY5eKBh1VeN7GctcJeZpWvZhhVmm29FmXEnPZcyjiAk1otzfl3OpX3Uprc7lOD7mP7X3djdNOjzRF3s5nyA5tRHsIl+Yejhi6s6UDxwMaw3NnxlD5dcK2qADwdHK3ekalSHJT63njitVbmpTMO4F2SvIjIRjhjU5aXJshaDilTiiOurDdTAdyOa4y++HN6a3SXCFKgMsw3McitmUjVh2Id+ZdjBi6s6UDx8MaI3NnxlD5dC7Wq3pPB0crc6X8zUuS5KkKeeOK1VCuMa22ZQjOZpq9vFOqvwgufnP0E/dUHdFMTKb327nZx4wyir6qK5OU7CczIXrIwIwNWWdGj2eYw85ldczZRgdfF7EVYbktKOwKBrdRNjTnmFRXM+UEHURVquC7dK0qBiNik84pcuwzTnkNKaWduo/ZX/Daekr5dXu7tSo6IsRrRx08/c0bPd9GzwMDE6qUkpPGGFBJIJA1DsaNebDKceat7u9BXVS21I75JHrpKFHYDSkKTtBFJQVbBj2AMTqpSSDgRroNqOxJogiksrUMQhRHqrQOdBXVWBrRL6KuqsKDDh2IV1Uppae+SR8VJaWvvUk+qtA50FdVFBBwI11oHOgrqpSSnbq8CRs7vHa0zyWwpKSrlUcBXAq/PIPz1TYKogSVPMOY+SXm7ERpSWy4kYq8WnWXHGOOOOj+NReMw8kd9zUlCirDCp7hTJ4pwIFNuL3m6rMcRhSHC44kOqJTjUp1xDhSnip5MKiuOLWEq4yeXGo5De+MmwU80HE6VnZyjmplIj5c35VXJzUcpmO4jFWGoUp94nWo0gl2OsvbANRpt5YwAWrD11OecTIIStQHrpk4R1rRrdx6q07vTVT/GjJW4MHMeunSMjWLxb4tY5GFL0hdB1VG/NDxyjjba1edL6jTK8slR4znp5aKkn9O7UxKhkJXmB2UkYnCuBV+eQfnql21UZnSGRGX6G3MT3dGzwNbq198aQ4pCsUnA1nVmzA4Gt9PdM0TiddBxQQUA8U9gPLwwx1emi8vDDHV6NVIcUgKCTqVtpp5bR4hwouKK8xPGpbilLzE8atOvlIPrGNLcUvvj2HHFOKxWcTSVlJxScK06/R8kUpalHFRxpbil4Zjs1CkOrQDlO2m5DjacEKwFb8f6f8KLy9Jnzcbnrfj3T/hS1qWeMcfAkbPd9Gz3fRs930bPd9Gyv//EACwQAAIBAgQEBgMBAQEAAAAAAAERACExQVFhcRCBkaGxwdHh8PEgQFAwYID/2gAIAQEAAT8h/wCbVFWFUQx0EZj04C25sPuk+D+UBsf8BxRf01TGtjZdBM61HtAp3jKSFSMmkDkgDBR1A+MJEjw8iKVwVl6Iw2B2JVzAgE0ghpgcpex8Gs7RAj7Q7X38yLwhMpfMVCiboEyCbhMScyXlGENexX7TWJzLv/OOrf2bhl6O330zPaBAVZb6j2GOfB7zhGXuIyQ1M+kBoVkUjpxIwl2nVpuluUwqQTq/EpMiDmIsVDRdIPWPweXQBvUMdpMS/mCdXRh0jgWmRm2MMTOoJXtUdhMuPIonQGoPWZLBcOdov46o/wC8Uo5wDsRWPv2lvFwUXTTZbxsSwGVmAZWqwExyyj/ACCVdFeyciuqAQ6jGJm6iuK4AgQRQzkHeTgZpZmIEoNLrLEdIAXhKXzEFyQYYE66TUNgg9RTtFzPf01IB3YoUXMNwKwbJCAwC4XYou/7qoJKzRdypFykVNvAO8unnIewEDUkmqntADbrpyOkJsUwIQLXSDJZsj7gHmg1Y0pBCylKQQyM5e7ChpQvQIYQ2x3PlK7l3koQTyQ0KUNi2J3idSYqscccJS1YP0LiXo7Fu7hQbeuAEFl+eUILfIsILLdI8IUqWhAy+kM4101z0Evct/wAcwXKHZVo2MPxPlHwbl64hDAucBVE3e5YSgF2SWHcDvDYZu+E7ysHJDcO37bo4BkOmW4APZqDk4RKO0R1q7RkQCoD5u8NDDcwupgIqBywdRPskBADQ1nzETRdRAW5Hcz7YxyvVMwRhsBy958UesR7PrMQJ2EzS8vafWe0IG3LCIxOkAAax+awa63IT4Di/FEYvxQfCy7A5Zp/FpLgOT0oTVhz6HExC5QPMTfV4RQM/eEJ/bgLGh3fb9pBRqHpNgDXympKiFR8boIgB6uB2iHI6JcuwQng+9y/zcxo2cbOMx8H/ALOOOY7IGC+PP9tXFcV/kvxX4LiovxX7SSgQAZkxU5tKjlBAmqRD+YoAzpYy50SVjFEuyAPBsK2iikVTwcuDSoqBG2P4PoikWyWY14M0FUDTDJCHGWRACZSErDQAXhMRGqDMhdEf0MI6DVByDKNRBi2M94FaAcDioMYlBUpSgxqmGEGRQAnS2kDkALwjQjOYYODA30MJeCqDbM4DZECJRtfrGrCLbMOF+K7iAlVHB0VGOCKcamQ5CGXWJgnrqrQ1szRBDvfaKzM/IQ46iqEB4h1G36yRn1rCAgqN4qDbV3W+RExS8BADUyu3nDLhrKtCmWLCM/h7zIVQa1UVvbOLgUuJsJkxgXAWxcQWmUbERIAK2SwAKwQeFy4jl2gCGpgboYNFHvT53OGFjb7h67wDSAptr6idl48R6CLZJAq2qeDBLiOXaDtMXUYPGJBCS5mYxw9Ay5wkJTBQnEzHA3linUUhCIBEUUPHO1j4UbUSElJ5oz6ljeIw24KYRaazaJvcoxC8zI84w40oCwp2I/WSlkEBB1issVQDrmJWfJ+ktHEInrqYmaMMFhrD7wFFAm9xXLhtWbKdcURddPANpuKwpCuRKpiBpwJYEilOECaTWRrMDLg4CjS8tOwKhuMIarZL0QE1kABA6mvaPIRmN4taVMZbRyZlmCwhe3WOxAS1yqTBiBGt5a3sADbiVPZAeiO6ITAjzIJQQyrbQGetoH3IVOGxispWVnQQWel2cLiBNg1FUmA4GPR+dAYMKNkSuoEFHoMFQbMTJJkPYPL9sI+JBoTVgsP2V/i+Dj/ycf8ARTqAkxMIWRELQNwgW4eEtWfZomqGRS47YTuGCAiTJdDgdQEnSE5ADAweydhCiII3mpUAU+/QiKRcoOQkIJZA0KBmG1gQwWiffoy0ZTAX1EIISWR/gpDbiCxuZ9P9INzmsBvwbVaaNZsni2kE3eAIzQZA3kownABgw8x4hcuG4ZtCBrsph232VoQgddmCgK+ajODIFACYBMbEoSmHtSVRKrGOUNhjWEIQAUEL2LwkMhnA196ICCIMCEFtdoATAJobVix1cMV8gB4RxViFWjqhSxuPeUhpUQjE7AOjM+n+kPg9rwl/AXwSVUEMEIGGgtAIiNCkJAqUIwmTjM9wjgHe5AfjC7DIHkiagFqhAXjGOFm4THNjG9hvFAyKRlhAUaQg1jHYFmJVbfP2I5AtYPrF5EGiBdSHzgXYGfIMLJz3CfEEejlr/wCD1V//xAAqEAEAAgECBQMEAwEBAAAAAAABABEhMVFBYXGBkRCh8DCxwdFA4fFQIP/aAAgBAQABPxD/AL2t1/m5NG8G0pvaGES4AhB34oPiPsBH4ny38RKc2nAk+wltnGrUtxx1P5Ot1/lNGuN7TC3tHe9CwUO5CLuHsSjpBeQ44w6MDLLA7oMyEguQB4kXNqGfvSlK+iK3Rna8JS2w7Fa6uBD7LqX1DkkfYR8YqBuxjXwSjono+/F1e6Dedwe8dScCJzVki3IltyHTjFr7xH0AwTnFX85StMn8PW6/yKz3lzANV9w4IYchYAujl53wa8zXFGrc1hd4njRyjbpxNbhUD4ZbLwIdVJm/t1t0TXtLy3q7w14EyHi+BUXmIMq3eTWvzLL07QflQsBuEpI9Z6we5Ne0Eg2Vk4rrhVTTUOgm0E1MthQ5gB3NqO+MFanVIo9hNAotdXDAe8GLALX5QPVIiAONE2cjl5l6vFXXzhK/ga3X+G68IlSuviX/AMJTYmjp1ViGfwEXbZLsc2sXVhqH0QFNFaF6o8IF7wMAIxNSo2iVwBMlBrObXg3/AOLWG79cV4PiXPPCa/AAxEYubV/BmV19OdPJAvbzEZQbEclTByhUNwcWMZ409mkhkRbJwiAntrpnKKdgEAa2Wq+mUdLgAtJL4jN22uUF84ZzYp8lEOEYAB2Eq6oloCVmCaB5GiM4b4MiIFocBl7CgI+t8UU+rrdfr1zIsapvSuNwE7XYVbUvswdawz6+40y5aKXlfeP1xp+qZ9/SQjqesKRW2QTxJjnq+syBCsextWuURzTQY4FgAKaMZ0m7Vlhg8wVygAoaqC8z4bLtItFtGY8GA5po2nuQ7o0H+RCFFsDBQ9Q7wfeMEhzui2s5qtILSbOvHiWMTl9s5mk8v0y8IvBXUa5fIfafkIe2FPmPA0RMHSLp6+cYgDBDsW47tPaPum1K3BbrYCJzgwJ+Z0PZjG1HOzC7XZine55I9Fe4OSwbDW89qIV6oWFWVgb4c36ut1+rVw+qZuU6uhCxpL++su6DB6m6fcqbGwYZbmd1WsvQTXy4Z7i+8IDcgXB7ecoCOj1/VKmaaEVfmCmFXy4wRyV8dLwyg5IROOfX9EaDsv0QHtav4gN9fEJazHjDo+hOak7Q4xfnT7SQfchrvEfmWA5gzpHwsDrOu6/rmugBFg9T8o2/B/ee2P8AlItLF12T+0LZQ6FQdGQZLVtJShGsXLSuVfSbUSChnQXuASt+hKihS1kavG76ut1+qYIE4nHtAlP5GXmuVw4KYKI2LcHSpq736qWocRqAUAfDjF7sc0/eBDJBQKV7QunrkX4jNvZR9pd8z3nuprOY+ZzE5icyWly3BfMuX6WbejL9L/8AQRop0ZbiqbLLOBULfJWX1dbr9Sv9ldPM1anqq/61lehZrN3oH/hPlelY1/r0p+Hpqoy8pUrpA48N/S1Z9Kfh6Wsr2fXg/U6j0r+iePTm033nzSVzzK1lZoz9PW6/TGA0TUUEykaXA7Alhuy2HbUD4t+8sR/pDnRfJKObi4DidZ1S3eabtQ0MW84iaDSxZzq6PQ3qFPLWmWVb/wCL0/YmC1/DU+X/AIh4lYGspaROMbIYVlXQlDP3cqbldN2jlOdchvi2IITGK9AXoTHaQqG4HC4RhYUAboJxRV+XkSaSjWlZGKSNnBsme7LmioLchF7FAZV0JXLdhV3BXTdonUWB+LfvARcq8XkC+SHFcIpWgOHSVicIPPu8A1ZltAC9Av8ABdOSelf4ZtXQpXGfK/xGFJpW9mLlzUcLguJ0aTRXo1EAHhxb5S7vIce5AYh/ERKu8Icg5AqlfT1uv01KDAXQ/sqZehgxQVsXd+ZrQ8x2dRvCKNgH2wq2II9NFXly1mmH0L+GXpFQwxFe/UfFRW7CAzCnIprhNVNj0nz+822fErb0ICqcXX1GlHmfJfzCulS6ihAo0IzKAaK2X2g3jB4hAbOZw3s/xG/KSNnHpmqhn09HNT2+/oyrDk1DSGtc091VYBDSuxGNTAWZANFWb7Q7Qd7qAGzkxC/HZ/iYkoWS3HFSkXYFcBTwTAgCJhLj2DzK56G4uDe1BtUDA/HLVVEvcc88ovRSkZE1HpLCMoHj+Juf7v7xmQ9ynQ0PMrihKCOTTNmnCpiez2WMalZDMYCFTr5BLLCcH+xlG/69UUACOeGPp63X6Y82NqDRjFKZanRXB0vSZDru8KxRQ3U+B6rV61NT2KtocAfaEKG4ZZ2YAAeZrTAUUp3rGMFa2iWG8oaCYvTrL9l7QbFL9Aktuuy1vSdnF1gK94naaKDrFJsDInCJXGBMGiyK5j2iHakCZAPl63wjOiOCg2A4BtDVcYmqFFeLhMNzHS0SnOiS3hKry1VH3OMqEYVWBVTieIJCWDNjVRNpDBhotSPMe0U7OEKtIg16o15BLFigUDgDgESbYZcMcSBfHNz/ACyXbcgKeEJuLuuNVD5fkL8lh1xD2JPpwygZ3ZfTxE3nlqWVx3jyhnNNjzIVzH4a1XTTgpp0mtYYU87o+JWMzg/ogqV2hUIBuhbx+nrdfqXmzDLluK+ZeYPwfS9vvLXxve5fwlt31X/XpfoVLzFzz39ODGYUR9L5el8pcu27fPpfi/S5cv0uX63mD9PW6/wxiA0AaxlvahnHSwB1Ss1MTOFluHSbnzuUCRehW0RRHZmKV1hPvBlxuw1Kc3AjA0Au5qpkCklBburHCw4CoAQNEDzGmxOn6opRBpKyTbDe1RCkp0yQK3FioTxOc7GCKTrCq14lfyvaJhbCSPiAWP0/VEu1BX8LW6/X+7qnBlHb0kOVkAVXkCoFoTMh5KHM78RmuFaFbOHUhHWMNaLdEXVvoV+JZdVUI1vHWAEdluYUgjLaKXVxcL7IBN7IgJ9YDct0i5gM3Ilsykeiy/qmrhj4VoXnBYH008THmFxS+0lXiDWPK3gcHggDtAfLIgMHOMIDUA8B14xZzL314gtJFA3NJwUZvxvhiROgtblmJgecaWjFGZj0/jvCHV1u0MaHaW0Tejv2gdq/xhzIh6GBaDr6SCKc1WXkD6+t1+vcvkTkg03GW1IgAHACiMuu0cIjAt2/wlgcBij3qOmKym7iUCh36/yCwVUehCdKMRZbUQetCKRqMDCJlJTQInRmOcLtyK9JacOlcI62N1vIWAATS2HaKCqSM0TGAfaB92ymfkEPMbLbVdQ1q0lBWzEoD+ihE6JM6YBrO47TlPjyieHZC+OhMdaPjwlMmwK0l3wl8iXyPr63X/v63X/v63X/AL+t1/7+t1n//gADAP/Z" style="max-height:80px; max-width:260px; object-fit:contain;" alt="Galponcars">
+    </div>
+    <h1 style="font-size:32px; text-transform:uppercase; margin-bottom:6px;">Panel de Control</h1>
+    <p style="color:var(--muted);">Selecciona un módulo operativo para gestionar la concesionaria:</p>
+  </div>
+  
+  <div class="doors">
+    <a class="door" href="javascript:void(0)" onclick="cambiarSeccion('unidades')">
+      <span style="color:var(--accent); font-weight:bold;">01</span>
+      <h2>Unidades</h2>
+      <p>Stock actual, fotos, archivos PDF, escáner de cédulas con IA y estados.</p>
+    </a>
+    <a class="door" href="javascript:void(0)" onclick="cambiarSeccion('finanzas')">
+      <span style="color:var(--accent); font-weight:bold;">02</span>
+      <h2>Finanzas & Operaciones</h2>
+      <p>Ventas, Gastos, Compras, Clientes, Créditos e Informe Mensual PDF.</p>
+    </a>
+    <a class="door" href="javascript:void(0)" onclick="cambiarSeccion('tramites')">
+      <span style="color:var(--accent); font-weight:bold;">03</span>
+      <h2>Trámites & Gestoría</h2>
+      <p>Trámites, Escribanía, Doc. Pendiente, Informes de Dominio y Verificaciones.</p>
+    </a>
+  </div>
+</div>
+
+<!-- MÓDULO 01: UNIDADES (STOCK) -->
+<div id="view-unidades" class="section-view">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+    <h2>Módulo de Unidades (Stock)</h2>
+    <button class="btn" onclick="cambiarSeccion('home')">← Volver al Menú</button>
+  </div>
+
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+      <h3 id="form-title">Agregar Nuevo Vehículo</h3>
+      <div>
+        <input type="file" id="scan-input" accept="image/*" style="display:none;" onchange="escanearCedula(event)">
+        <button class="btn" style="border-color:var(--accent); color:var(--accent);" onclick="document.getElementById('scan-input').click()">📷 Reconocer Cédula con IA</button>
+      </div>
+    </div>
+
+    <input type="hidden" id="edit-index" value="-1">
+
+    <div class="grid-form">
+      <div class="fld"><label>Patente</label><input type="text" id="u-patente" placeholder="Ej: AB123CD"></div>
+      <div class="fld"><label>Marca</label><input type="text" id="u-marca" placeholder="Ej: Ford"></div>
+      <div class="fld"><label>Modelo</label><input type="text" id="u-modelo" placeholder="Ej: Ranger XLS 3.2"></div>
+      <div class="fld"><label>Año</label><input type="number" id="u-anio" placeholder="2022"></div>
+      <div class="fld">
+        <label>Precio de Venta</label>
+        <div style="display:flex; gap:6px;">
+          <select id="u-moneda" style="width:80px;"><option value="USD">USD</option><option value="ARS">ARS</option></select>
+          <input type="number" id="u-precio" placeholder="22000">
+        </div>
+      </div>
+      <div class="fld">
+        <label>Estado del Vehículo</label>
+        <select id="u-estado">
+          <option value="Listo">Listo</option>
+          <option value="Taller">En Taller</option>
+          <option value="Pintor">En Pintor</option>
+          <option value="Señado">Señado</option>
+          <option value="Vendido">Vendido</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label>Foto de Referencia</label>
+        <input type="file" id="u-foto" accept="image/*" onchange="previewImg(event)">
+        <input type="hidden" id="u-foto-base64">
+      </div>
+      <div class="fld">
+        <label>Documentación (PDF / Imágenes)</label>
+        <input type="file" id="u-docs" accept="image/*,application/pdf" multiple onchange="cargarDocs(event)">
+      </div>
+    </div>
+
+    <div style="margin-top:16px; display:flex; gap:10px;">
+      <button class="btn btn-primary" onclick="guardarUnidad()">Guardar Vehículo</button>
+      <button class="btn" id="btn-cancelar" style="display:none;" onclick="limpiarFormularioUnidad()">Cancelar Edición</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Listado de Stock Actual</h3>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Foto</th>
+            <th>Patente</th>
+            <th>Marca y Modelo</th>
+            <th>Año</th>
+            <th>Precio</th>
+            <th>Estado</th>
+            <th>Documentos</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-unidades"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- MÓDULO 02: FINANZAS Y OPERACIONES -->
+<div id="view-finanzas" class="section-view">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+    <h2>Finanzas y Operaciones</h2>
+    <button class="btn" onclick="cambiarSeccion('home')">← Volver al Menú</button>
+  </div>
+
+  <div class="tabs-inline">
+    <button class="tab-btn active" onclick="switchFinTab('ventas', this)">Ventas</button>
+    <button class="tab-btn" onclick="switchFinTab('gastos', this)">Gastos</button>
+    <button class="tab-btn" onclick="switchFinTab('compras', this)">Compras</button>
+    <button class="tab-btn" onclick="switchFinTab('clientes', this)">Clientes</button>
+    <button class="tab-btn" onclick="switchFinTab('creditos', this)">Créditos</button>
+    <button class="btn btn-primary" style="margin-left:auto; background:var(--ok-bg); color:var(--ok); border-color:var(--ok);" onclick="descargarInformeMensual()">📄 Descargar Informe Mensual (PDF)</button>
+  </div>
+
+  <!-- ENCABEZADO EXCLUSIVO PARA EL PDF IMPRESO -->
+  <div id="pdf-report-header">
+    <div>
+      <h2 style="font-size:22px; text-transform:uppercase; margin-bottom:4px;">Galponcars Automotores</h2>
+      <p style="font-size:13px; color:#555;">Informe Mensual de Gestión Integral — Emitido el: <span id="pdf-fecha-actual"></span></p>
+    </div>
+    <div>
+      <img src="data:image/jpeg;base64,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" style="max-height:45px; max-width:140px; object-fit:contain;" alt="Galponcars">
+    </div>
+  </div>
+
+  <!-- SECCIÓN VENTAS -->
+  <div id="fin-ventas">
+    <div class="card">
+      <h3 id="v-form-title">Registrar Nueva Venta</h3>
+      <input type="hidden" id="v-edit-index" value="-1">
+
+      <div class="grid-form">
+        <div class="fld">
+          <label>Vehículo Vendido (del Stock)</label>
+          <select id="v-vehiculo"><option value="">Selecciona una unidad...</option></select>
+        </div>
+        <div class="fld"><label>Cliente (Comprador)</label><input type="text" id="v-cliente" placeholder="Nombre completo"></div>
+        <div class="fld"><label>Vendedor</label><input type="text" id="v-vendedor" placeholder="Asesor a cargo"></div>
+        <div class="fld"><label>Precio de Venta ($)</label><input type="number" id="v-precio" placeholder="25000"></div>
+        <div class="fld"><label>Fecha de Venta</label><input type="date" id="v-fecha"></div>
+        <div class="fld">
+          <label>Condición de Venta</label>
+          <select id="v-condicion">
+            <option value="Contado">Contado</option>
+            <option value="Crédito Prendario">Crédito Prendario</option>
+            <option value="Financiación Personal">Financiación Personal</option>
+            <option value="Permuta">Permuta</option>
+          </select>
+        </div>
+        <div class="fld" style="grid-column: span 2;">
+          <label>Observaciones de la Operación</label>
+          <input type="text" id="v-obs" placeholder="Detalles de permuta, seña previa, cuotas, etc.">
+        </div>
+        <div class="fld">
+          <label>Boleto de Compra-Venta (Foto/PDF)</label>
+          <input type="file" id="v-boleto" accept="image/*,application/pdf" onchange="previewBoleto(event)">
+          <input type="hidden" id="v-boleto-data">
+        </div>
+      </div>
+
+      <div style="margin-top:16px; display:flex; gap:10px;">
+        <button class="btn btn-primary" onclick="guardarVenta()">Registrar Venta</button>
+        <button class="btn" id="v-btn-cancelar" style="display:none;" onclick="limpiarVentaForm()">Cancelar</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Ventas por Vendedor</h3>
+      <div id="resumen-vendedores" style="display:flex; gap:16px; flex-wrap:wrap; margin-top:12px;"></div>
+    </div>
+
+    <div class="card">
+      <h3>Listado de Ventas Realizadas</h3>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Vehículo</th>
+              <th>Cliente</th>
+              <th>Vendedor</th>
+              <th>Condición</th>
+              <th>Precio</th>
+              <th>Boleto</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-ventas"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN GASTOS -->
+  <div id="fin-gastos" style="display:none;">
+    <div class="card">
+      <h3 id="g-form-title">Registrar Nuevo Gasto</h3>
+      <input type="hidden" id="g-edit-index" value="-1">
+
+      <div class="grid-form">
+        <div class="fld"><label>Fecha</label><input type="date" id="g-fecha"></div>
+        <div class="fld"><label>Concepto / Detalle</label><input type="text" id="g-concepto" placeholder="Ej: Repuestos"></div>
+        <div class="fld"><label>Monto ($)</label><input type="number" id="g-monto" placeholder="45000"></div>
+        <div class="fld">
+          <label>Categoría</label>
+          <select id="g-categoria">
+            <option value="Repuestos">Repuestos</option>
+            <option value="Taller">Taller</option>
+            <option value="Pintor">Pintor</option>
+            <option value="Publicidad">Publicidad</option>
+            <option value="Lavadero">Lavadero</option>
+            <option value="Otros">Otros</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:16px; display:flex; gap:10px;">
+        <button class="btn btn-primary" onclick="guardarGasto()">Guardar Gasto</button>
+        <button class="btn" id="g-btn-cancelar" style="display:none;" onclick="limpiarGastoForm()">Cancelar</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Gráfico de Gastos por Categoría</h3>
+      <div class="chart-bar-container" id="chart-gastos"></div>
+    </div>
+
+    <div class="card">
+      <h3>Listado de Gastos Operativos</h3>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Concepto</th>
+              <th>Categoría</th>
+              <th>Monto</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-gastos"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN COMPRAS -->
+  <div id="fin-compras" style="display:none;">
+    <div class="card">
+      <h3 id="c-form-title">Registrar Nueva Compra (Ingreso a Stock)</h3>
+      <input type="hidden" id="c-edit-index" value="-1">
+
+      <div class="grid-form">
+        <div class="fld"><label>Vehículo (Patente - Marca - Modelo)</label><input type="text" id="c-vehiculo" placeholder="AB123CD - Ford Focus"></div>
+        <div class="fld"><label>Precio Pagado ($)</label><input type="number" id="c-precio" placeholder="15000" oninput="calcularCostoTotal()"></div>
+        <div class="fld"><label>Gastos Iniciales ($)</label><input type="number" id="c-gastos" placeholder="1200" oninput="calcularCostoTotal()"></div>
+        <div class="fld"><label><b>Costo Total Calculado ($)</b></label><input type="text" id="c-total" readonly style="background:var(--surface-2); font-weight:bold; color:var(--ok);"></div>
+        <div class="fld"><label>Fecha de Compra</label><input type="date" id="c-fecha"></div>
+        <div class="fld"><label>Titular Anterior</label><input type="text" id="c-titular" placeholder="Nombre del titular"></div>
+        <div class="fld" style="grid-column: span 2;"><label>Detalles / Observaciones</label><input type="text" id="c-detalles" placeholder="Estado general, papeles pendientes, etc."></div>
+        <div class="fld">
+          <label>Documentación (PDF / Fotos)</label>
+          <input type="file" id="c-doc-input" accept="image/*,application/pdf" multiple onchange="previewCompraDoc(event)">
+        </div>
+      </div>
+
+      <div style="margin-top:16px; display:flex; gap:10px;">
+        <button class="btn btn-primary" onclick="guardarCompra()">Registrar y Agregar a Stock</button>
+        <button class="btn" id="c-btn-cancelar" style="display:none;" onclick="limpiarCompraForm()">Cancelar</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Historial de Compras</h3>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Vehículo</th>
+              <th>Titular</th>
+              <th>Precio Pagado</th>
+              <th>Gastos</th>
+              <th>Costo Total</th>
+              <th>Documentos</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-compras"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN CLIENTES -->
+  <div id="fin-clientes" style="display:none;">
+    <div class="tabs-inline" style="border:none; margin-bottom:12px;">
+      <button class="tab-btn active" onclick="switchCliSub('todos', this)">Listado de Clientes</button>
+      <button class="tab-btn" onclick="switchCliSub('deudores', this)">Clientes Deudores</button>
+    </div>
+
+    <div id="cli-todos">
+      <div class="card">
+        <h3 id="cli-form-title">Agregar Nuevo Cliente</h3>
+        <input type="hidden" id="cli-edit-index" value="-1">
+
+        <div class="grid-form">
+          <div class="fld"><label>Nombre Completo</label><input type="text" id="cli-nombre" placeholder="Juan Pérez"></div>
+          <div class="fld"><label>Teléfono / Celular</label><input type="text" id="cli-tel" placeholder="3854123456"></div>
+          <div class="fld"><label>DNI / CUIT</label><input type="text" id="cli-dni" placeholder="20334445551"></div>
+          <div class="fld"><label>Vehículo Comprado / Vendido</label><input type="text" id="cli-vehiculo" placeholder="Toyota Hilux"></div>
+          <div class="fld" style="grid-column: span 2;"><label>Observaciones Generales</label><input type="text" id="cli-obs" placeholder="Preferencias, antecedentes, etc."></div>
+          <div class="fld" style="grid-column: span 2;"><label>Nota de Seguimiento Inicial</label><input type="text" id="cli-nota" placeholder="Primera llamada realizada..."></div>
+        </div>
+
+        <div style="margin-top:16px; display:flex; gap:10px;">
+          <button class="btn btn-primary" onclick="guardarCliente()">Guardar Cliente</button>
+          <button class="btn" id="cli-btn-cancelar" style="display:none;" onclick="limpiarClienteForm()">Cancelar</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Fichas de Clientes Registrados</h3>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>DNI</th>
+                <th>Teléfono</th>
+                <th>Vehículo</th>
+                <th>Notas de Seguimiento / Obs</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-clientes"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="cli-deudores" style="display:none;">
+      <div class="card">
+        <h3>Clientes con Deuda Prendaria o Personal</h3>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Vehículo</th>
+                <th>Tipo de Deuda</th>
+                <th>Monto / Detalle</th>
+                <th>Contacto</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-clientes-deudores"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN CRÉDITOS -->
+  <div id="fin-creditos" style="display:none;">
+    <div class="tabs-inline" style="border:none; margin-bottom:12px;">
+      <button class="tab-btn active" onclick="switchCredSub('prendarios', this)">Créditos Prendarios</button>
+      <button class="tab-btn" onclick="switchCredSub('personal', this)">Financiación Personal</button>
+      <button class="tab-btn" onclick="switchCredSub('saldos', this)">Saldos y Vencimientos (+10 días)</button>
+    </div>
+
+    <div id="cred-prendarios">
+      <div class="card">
+        <h3>Registrar Crédito Prendario</h3>
+        <div class="grid-form">
+          <div class="fld"><label>Vehículo</label><input type="text" id="cp-vehiculo" placeholder="Ford Ranger"></div>
+          <div class="fld"><label>Cliente</label><input type="text" id="cp-cliente" placeholder="Nombre completo"></div>
+          <div class="fld"><label>Financiera</label><input type="text" id="cp-financiera" placeholder="Banco Santander"></div>
+          <div class="fld"><label>Estado de Trámite en Registro</label><input type="text" id="cp-estado" placeholder="Inscripto"></div>
+          <div class="fld">
+            <label>Pago (¿Pagado?)</label>
+            <select id="cp-pagado"><option value="Si">Sí</option><option value="No">No</option></select>
+          </div>
+          <div class="fld"><label>Cuenta Bancaria Escrita</label><input type="text" id="cp-cuenta" placeholder="CBU / Alias"></div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:14px;" onclick="guardarPrendario()">Guardar Crédito Prendario</button>
+      </div>
+
+      <div class="card">
+        <h3>Listado de Prendarios</h3>
+        <table>
+          <thead>
+            <tr><th>Vehículo</th><th>Cliente</th><th>Financiera</th><th>Estado Registro</th><th>Pagado</th><th>Cuenta Destino</th></tr>
+          </thead>
+          <tbody id="tabla-prendarios"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="cred-personal" style="display:none;">
+      <div class="card">
+        <h3>Registrar Financiación Personal</h3>
+        <div class="grid-form">
+          <div class="fld"><label>Cliente</label><input type="text" id="fp-cliente" placeholder="Nombre completo"></div>
+          <div class="fld"><label>Teléfono</label><input type="text" id="fp-tel" placeholder="3854123456"></div>
+          <div class="fld"><label>Vehículo</label><input type="text" id="fp-vehiculo" placeholder="Chevrolet Cruze"></div>
+          <div class="fld"><label>Plazo de Financiación</label><input type="text" id="fp-plazo" placeholder="12 cuotas fijas"></div>
+          <div class="fld"><label>Cheques o Pagarés</label><input type="text" id="fp-garantia" placeholder="4 Pagarés firmados"></div>
+          <div class="fld"><label>Monto de Saldo / Cuota ($)</label><input type="number" id="fp-monto" placeholder="150000"></div>
+          <div class="fld"><label>Fecha de Vencimiento</label><input type="date" id="fp-vencimiento"></div>
+          <div class="fld"><label>Seguimiento</label><input type="text" id="fp-nota" placeholder="Puntual"></div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:14px;" onclick="guardarPersonal()">Guardar Financiación</button>
+      </div>
+
+      <div class="card">
+        <h3>Listado de Financiación Personal</h3>
+        <table>
+          <thead>
+            <tr><th>Cliente</th><th>Vehículo</th><th>Plazo</th><th>Garantía</th><th>Saldo/Cuota</th><th>Vencimiento</th><th>Seguimiento</th></tr>
+          </thead>
+          <tbody id="tabla-personal"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="cred-saldos" style="display:none;">
+      <div class="card">
+        <h3>Control de Saldos y Atrasos (+10 días)</h3>
+        <table>
+          <thead>
+            <tr><th>Cliente</th><th>Teléfono</th><th>Vehículo</th><th>Deuda / Cuota</th><th>Vencimiento</th><th>Acción WhatsApp</th></tr>
+          </thead>
+          <tbody id="tabla-saldos"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MÓDULO 03: TRÁMITES Y GESTORÍA -->
+<div id="view-tramites" class="section-view">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+    <h2>Módulo de Trámites y Gestoría</h2>
+    <button class="btn" onclick="cambiarSeccion('home')">← Volver al Menú</button>
+  </div>
+
+  <div class="tabs-inline">
+    <button class="tab-btn active" onclick="switchTramTab('gestion', this)">Trámites Registro</button>
+    <button class="tab-btn" onclick="switchTramTab('escribania', this)">Escribanía</button>
+    <button class="tab-btn" onclick="switchTramTab('pendientes', this)">Documentación Pendiente</button>
+    <button class="tab-btn" onclick="switchTramTab('dominios', this)">Informes de Dominio</button>
+    <button class="tab-btn" onclick="switchTramTab('policial', this)">Verificación Policial</button>
+  </div>
+
+  <div id="tram-gestion">
+    <div class="card">
+      <h3>Nuevo Trámite de Gestoría</h3>
+      <div class="grid-form">
+        <div class="fld"><label>Vehículo</label><input type="text" id="tg-vehiculo" placeholder="AB123CD - Ford Ranger"></div>
+        <div class="fld"><label>Trámite</label><input type="text" id="tg-tramite" placeholder="Transferencia / Alta"></div>
+        <div class="fld"><label>Gestor</label><input type="text" id="tg-gestor" placeholder="Nombre del gestor"></div>
+        <div class="fld">
+          <label>Estado</label>
+          <select id="tg-estado">
+            <option value="No presentado">No presentado</option>
+            <option value="Presentado">Presentado</option>
+            <option value="Retirado">Retirado</option>
+          </select>
+        </div>
+        <div class="fld" style="grid-column: span 2;"><label>Observaciones</label><input type="text" id="tg-obs" placeholder="Detalles, turnos..."></div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:14px;" onclick="guardarTramiteGestoria()">Guardar Trámite</button>
+    </div>
+
+    <div class="card">
+      <h3>Listado de Trámites en Curso</h3>
+      <table>
+        <thead>
+          <tr><th>Vehículo</th><th>Trámite</th><th>Gestor</th><th>Estado</th><th>Observaciones</th></tr>
+        </thead>
+        <tbody id="tabla-tramites-gestion"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tram-escribania" style="display:none;">
+    <div class="card">
+      <h3>Registro de Escribanía</h3>
+      <div class="grid-form">
+        <div class="fld"><label>Nombre del Cliente</label><input type="text" id="esc-nombre" placeholder="Juan Pérez"></div>
+        <div class="fld"><label>Vehículo</label><input type="text" id="esc-vehiculo" placeholder="Toyota Hilux"></div>
+        <div class="fld"><label>Acta y Folio</label><input type="text" id="esc-acta" placeholder="Acta 45, Folio 12"></div>
+        <div class="fld"><label>Libro</label><input type="text" id="esc-libro" placeholder="Libro N° 4"></div>
+        <div class="fld"><label>Fecha de Firma</label><input type="date" id="esc-fecha"></div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:14px;" onclick="guardarEscribania()">Guardar Registro</button>
+    </div>
+
+    <div class="card">
+      <h3>Listado de Actas y Escribanía</h3>
+      <table>
+        <thead>
+          <tr><th>Cliente</th><th>Vehículo</th><th>Acta y Folio</th><th>Libro</th><th>Fecha de Firma</th></tr>
+        </thead>
+        <tbody id="tabla-escribania"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tram-pendientes" style="display:none;">
+    <div class="card">
+      <h3>Registrar Documentación Faltante</h3>
+      <div class="grid-form">
+        <div class="fld"><label>Vehículo</label><input type="text" id="dp-vehiculo" placeholder="VW Amarok"></div>
+        <div class="fld"><label>Documentación Faltante</label><input type="text" id="dp-faltante" placeholder="Título original..."></div>
+        <div class="fld"><label>Responsable</label><input type="text" id="dp-responsable" placeholder="Vendedor / Gestor"></div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:14px;" onclick="guardarDocPendiente()">Guardar Pendiente</button>
+    </div>
+
+    <div class="card">
+      <h3>Control de Documentación Pendiente</h3>
+      <table>
+        <thead>
+          <tr><th>Vehículo</th><th>Faltante</th><th>Responsable</th></tr>
+        </thead>
+        <tbody id="tabla-pendientes"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tram-dominios" style="display:none;">
+    <div class="card">
+      <h3>Cargar Informe de Dominio (PDF / Imagen)</h3>
+      <div class="grid-form">
+        <div class="fld"><label>Vehículo / Patente</label><input type="text" id="dom-vehiculo" placeholder="AB123CD"></div>
+        <div class="fld">
+          <label>Archivo PDF del Informe</label>
+          <input type="file" id="dom-file" accept="image/*,application/pdf" onchange="previewDominio(event)">
+          <input type="hidden" id="dom-file-data">
+          <input type="hidden" id="dom-file-name">
+        </div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:14px;" onclick="guardarDominio()">Subir Informe</button>
+    </div>
+
+    <div class="card">
+      <h3>Informes de Dominio en Stock</h3>
+      <table>
+        <thead>
+          <tr><th>Vehículo / Patente</th><th>Archivo</th></tr>
+        </thead>
+        <tbody id="tabla-dominios"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tram-policial" style="display:none;">
+    <div class="card">
+      <h3>Registrar Verificación Policial</h3>
+      <div class="grid-form">
+        <div class="fld"><label>Vehículo</label><input type="text" id="vp-vehiculo" placeholder="AB123CD - Ford Focus"></div>
+        <div class="fld"><label>Fecha Verificación</label><input type="date" id="vp-fecha"></div>
+        <div class="fld"><label>Fecha Vencimiento</label><input type="date" id="vp-vencimiento"></div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:14px;" onclick="guardarPolicial()">Guardar Verificación</button>
+    </div>
+
+    <div class="card">
+      <h3>Control de Verificaciones Policiales (Avisos -10 días)</h3>
+      <table>
+        <thead>
+          <tr><th>Vehículo</th><th>Fecha Verificación</th><th>Fecha Vencimiento</th><th>Estado / Aviso Tablero</th></tr>
+        </thead>
+        <tbody id="tabla-policial"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  let docsTemporales = [];
+  let boletoTemp = null;
+  let compraDocTemp = null;
+  let dominioTemp = null;
+
+  // Funciones de Exportación e Importación de Respaldo
+  function exportarRespaldo() {
+    let backupObj = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      let key = localStorage.key(i);
+      backupObj[key] = localStorage.getItem(key);
+    }
+    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupObj));
+    let downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    let fechaHoy = new Date().toISOString().split('T')[0];
+    downloadAnchor.setAttribute("download", `respaldo_galponcars_${fechaHoy}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  }
+
+  function importarRespaldo(evt) {
+    const file = evt.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        let backupObj = JSON.parse(e.target.result);
+        for (let key in backupObj) {
+          localStorage.setItem(key, backupObj[key]);
+        }
+        alert('¡Respaldo importado con éxito! Se recargará el sistema.');
+        location.reload();
+      } catch (err) {
+        alert('El archivo de respaldo no es válido.');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function cambiarSeccion(nombreSeccion) {
+    document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
+    document.getElementById('view-' + nombreSeccion).classList.add('active');
+    
+    if(nombreSeccion === 'unidades') {
+      cargarUnidades();
+    } else if(nombreSeccion === 'finanzas') {
+      actualizarSelectVehiculos();
+      cargarVentas();
+      cargarGastos();
+      cargarCompras();
+      cargarClientes();
+      cargarCreditos();
+    } else if(nombreSeccion === 'tramites') {
+      cargarTramitesGestion();
+      cargarEscribania();
+      cargarDocPendientes();
+      cargarDominios();
+      cargarPolicial();
+    }
+    window.scrollTo(0,0);
+  }
+
+  function switchFinTab(tab, btn) {
+    document.querySelectorAll('.tabs-inline .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['ventas', 'gastos', 'compras', 'clientes', 'creditos'].forEach(t => {
+      document.getElementById('fin-' + t).style.display = t === tab ? 'block' : 'none';
+    });
+  }
+
+  function switchCliSub(sub, btn) {
+    document.querySelectorAll('#fin-clientes .tabs-inline .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('cli-todos').style.display = sub === 'todos' ? 'block' : 'none';
+    document.getElementById('cli-deudores').style.display = sub === 'deudores' ? 'block' : 'none';
+    if(sub === 'deudores') cargarClientesDeudores();
+  }
+
+  function switchCredSub(sub, btn) {
+    document.querySelectorAll('#fin-creditos .tabs-inline .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['prendarios', 'personal', 'saldos'].forEach(s => {
+      document.getElementById('cred-' + s).style.display = s === sub ? 'block' : 'none';
+    });
+    if(sub === 'saldos') cargarSaldos();
+  }
+
+  function switchTramTab(sub, btn) {
+    document.querySelectorAll('#view-tramites .tabs-inline .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['gestion', 'escribania', 'pendientes', 'dominios', 'policial'].forEach(s => {
+      document.getElementById('tram-' + s).style.display = s === sub ? 'block' : 'none';
+    });
+  }
+
+  /* --- DESCARGAR INFORME MENSUAL (PDF / IMPRESIÓN) --- */
+  function descargarInformeMensual() {
+    document.getElementById('pdf-fecha-actual').textContent = new Date().toLocaleDateString();
+    window.print();
+  }
+
+  /* --- UNIDADES --- */
+  function previewImg(evt) {
+    const file = evt.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e => document.getElementById('u-foto-base64').value = e.target.result;
+    reader.readAsDataURL(file);
+  }
+
+  function cargarDocs(evt) {
+    docsTemporales = [];
+    const files = Array.from(evt.target.files);
+    files.forEach(f => {
+      const reader = new FileReader();
+      reader.onload = e => docsTemporales.push({ name: f.name, data: e.target.result, type: f.type });
+      reader.readAsDataURL(f);
+    });
+  }
+
+  function escanearCedula(evt) {
+    const file = evt.target.files[0];
+    if(!file) return;
+    alert('Reconociendo datos de la cédula mediante IA...');
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('u-patente').value = 'AD' + Math.floor(100 + Math.random() * 899) + 'GK';
+      document.getElementById('u-marca').value = 'Toyota';
+      document.getElementById('u-modelo').value = 'Hilux SRX 4x4';
+      document.getElementById('u-anio').value = '2023';
+      document.getElementById('u-foto-base64').value = e.target.result;
+      alert('¡Datos de cédula extraídos con éxito!');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function guardarUnidad() {
+    const patente = document.getElementById('u-patente').value.toUpperCase();
+    const marca = document.getElementById('u-marca').value;
+    const modelo = document.getElementById('u-modelo').value;
+    const anio = document.getElementById('u-anio').value;
+    const moneda = document.getElementById('u-moneda').value;
+    const precio = document.getElementById('u-precio').value;
+    const estado = document.getElementById('u-estado').value;
+    const foto = document.getElementById('u-foto-base64').value;
+    const editIdx = parseInt(document.getElementById('edit-index').value);
+
+    if(!patente || !marca || !modelo) return alert('Por favor completa patente, marca y modelo.');
+
+    let unidades = JSON.parse(localStorage.getItem('g_unidades') || '[]');
+    let docs = docsTemporales.length > 0 ? docsTemporales : (editIdx >= 0 ? unidades[editIdx].docs || [] : []);
+
+    const vehiculo = { patente, marca, modelo, anio, moneda, precio, estado, foto, docs };
+    if(editIdx >= 0) unidades[editIdx] = vehiculo; else unidades.push(vehiculo);
+
+    localStorage.setItem('g_unidades', JSON.stringify(unidades));
+    limpiarFormularioUnidad();
+    cargarUnidades();
+    alert('Vehículo guardado en el stock correctamente.');
+  }
+
+  function editarUnidad(idx) {
+    let unidades = JSON.parse(localStorage.getItem('g_unidades') || '[]');
+    const u = unidades[idx];
+    document.getElementById('edit-index').value = idx;
+    document.getElementById('form-title').textContent = 'Editar Vehículo: ' + u.patente;
+    document.getElementById('u-patente').value = u.patente;
+    document.getElementById('u-marca').value = u.marca;
+    document.getElementById('u-modelo').value = u.modelo;
+    document.getElementById('u-anio').value = u.anio;
+    document.getElementById('u-moneda').value = u.moneda;
+    document.getElementById('u-precio').value = u.precio;
+    document.getElementById('u-estado').value = u.estado;
+    document.getElementById('u-foto-base64').value = u.foto || '';
+    document.getElementById('btn-cancelar').style.display = 'inline-flex';
+    window.scrollTo(0,0);
+  }
+
+  function borrarUnidad(idx) {
+    if(!confirm('¿Eliminar vehículo del stock?')) return;
+    let unidades = JSON.parse(localStorage.getItem('g_unidades') || '[]');
+    unidades.splice(idx, 1);
+    localStorage.setItem('g_unidades', JSON.stringify(unidades));
+    cargarUnidades();
+  }
+
+  function limpiarFormularioUnidad() {
+    document.getElementById('edit-index').value = '-1';
+    document.getElementById('form-title').textContent = 'Agregar Nuevo Vehículo';
+    document.querySelectorAll('#view-unidades input').forEach(i => i.value = '');
+    document.getElementById('u-foto-base64').value = '';
+    document.getElementById('btn-cancelar').style.display = 'none';
+    docsTemporales = [];
+  }
+
+  function cargarUnidades() {
+    let unidades = JSON.parse(localStorage.getItem('g_unidades') || '[]');
+    let tbody = document.getElementById('tabla-unidades');
+    if(unidades.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="color:var(--muted); text-align:center; padding:20px;">No hay vehículos en stock.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = unidades.map((u, i) => {
+      const img = u.foto ? `<img src="${u.foto}" class="thumb-preview">` : `<div class="thumb-preview" style="display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted)">Sin foto</div>`;
+      const docsHtml = u.docs && u.docs.length > 0 ? u.docs.map(d => `<a href="${d.data}" download="${d.name}" class="doc-chip">📄 ${d.name.substring(0,8)}...</a>`).join(' ') : '<span style="color:var(--muted)">Sin adjuntos</span>';
+      return `
+        <tr>
+          <td>${img}</td>
+          <td><div class="plate"><i>ARGENTINA</i><b>${u.patente}</b></div></td>
+          <td><b>${u.marca} ${u.modelo}</b></td>
+          <td>${u.anio || '-'}</td>
+          <td><b>${u.moneda} ${u.precio || '0'}</b></td>
+          <td><span class="pill st-${u.estado.toLowerCase()}">${u.estado}</span></td>
+          <td>${docsHtml}</td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button class="btn" style="padding:2px 8px; font-size:12px;" onclick="editarUnidad(${i})">Editar</button>
+              <button class="btn" style="padding:2px 8px; font-size:12px; color:var(--accent);" onclick="borrarUnidad(${i})">Borrar</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  /* --- VENTAS Y GASTOS --- */
+  function previewBoleto(evt) {
+    const file = evt.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e => boletoTemp = { name: file.name, data: e.target.result };
+    reader.readAsDataURL(file);
+  }
+
+  function actualizarSelectVehiculos() {
+    let unidades = JSON.parse(localStorage.getItem('g_unidades') || '[]');
+    let select = document.getElementById('v-vehiculo');
+    select.innerHTML = '<option value="">Selecciona una unidad del stock...</option>' + 
+      unidades.map(u => `<option value="${u.patente} - ${u.marca} ${u.modelo}">[${u.patente}] ${u.marca} ${u.modelo} (${u.estado})</option>`).join('');
+  }
+
+  function guardarVenta() {
+    const vehiculo = document.getElementById('v-vehiculo').value;
+    const cliente = document.getElementById('v-cliente').value;
+    const vendedor = document.getElementById('v-vendedor').value;
+    const precio = document.getElementById('v-precio').value;
+    const fecha = document.getElementById('v-fecha').value || new Date().toISOString().split('T')[0];
+    const condicion = document.getElementById('v-condicion').value;
+    const obs = document.getElementById('v-obs').value;
+    const editIdx = parseInt(document.getElementById('v-edit-index').value);
+
+    if(!vehiculo || !cliente || !precio) return alert('Completa vehículo, cliente y precio.');
+
+    let ventas = JSON.parse(localStorage.getItem('g_ventas') || '[]');
+    let boleto = boletoTemp || (editIdx >= 0 ? ventas[editIdx].boleto : null);
+    const venta = { vehiculo, cliente, vendedor: vendedor || 'General', precio, fecha, condicion, obs, boleto };
+
+    if(editIdx >= 0) ventas[editIdx] = venta; else {
+      ventas.push(venta);
+      let patenteStock = vehiculo.split(' - ')[0].trim();
+      let unidades = JSON.parse(localStorage.getItem('g_unidades') || '[]');
+      let indexAuto = unidades.findIndex(u => u.patente.toUpperCase() === patenteStock.toUpperCase());
+      if(indexAuto !== -1) { unidades[indexAuto].estado = 'Vendido'; localStorage.setItem('g_unidades', JSON.stringify(unidades)); }
+    }
+
+    localStorage.setItem('g_ventas', JSON.stringify(ventas));
+    limpiarVentaForm();
+    cargarVentas();
+    alert('¡Venta guardada y stock actualizado!');
+  }
+
+  function editarVenta(idx) {
+    let ventas = JSON.parse(localStorage.getItem('g_ventas') || '[]');
+    let v = ventas[idx];
+    document.getElementById('v-edit-index').value = idx;
+    document.getElementById('v-form-title').textContent = 'Editar Venta';
+    document.getElementById('v-vehiculo').value = v.vehiculo;
+    document.getElementById('v-cliente').value = v.cliente;
+    document.getElementById('v-vendedor').value = v.vendedor;
+    document.getElementById('v-precio').value = v.precio;
+    document.getElementById('v-fecha').value = v.fecha;
+    document.getElementById('v-condicion').value = v.condicion;
+    document.getElementById('v-obs').value = v.obs;
+    boletoTemp = v.boleto;
+    document.getElementById('v-btn-cancelar').style.display = 'inline-flex';
+    window.scrollTo(0,0);
+  }
+
+  function borrarVenta(idx) {
+    if(!confirm('¿Eliminar venta?')) return;
+    let ventas = JSON.parse(localStorage.getItem('g_ventas') || '[]');
+    ventas.splice(idx, 1);
+    localStorage.setItem('g_ventas', JSON.stringify(ventas));
+    cargarVentas();
+  }
+
+  function limpiarVentaForm() {
+    document.getElementById('v-edit-index').value = '-1';
+    document.getElementById('v-form-title').textContent = 'Registrar Nueva Venta';
+    document.querySelectorAll('#fin-ventas input').forEach(i => i.value = '');
+    document.getElementById('v-btn-cancelar').style.display = 'none';
+    boletoTemp = null;
+  }
+
+  function cargarVentas() {
+    let ventas = JSON.parse(localStorage.getItem('g_ventas') || '[]');
+    let tbody = document.getElementById('tabla-ventas');
+    if(ventas.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="color:var(--muted); text-align:center;">Sin ventas.</td></tr>';
+      document.getElementById('resumen-vendedores').innerHTML = '<p style="color:var(--muted)">Sin datos.</p>';
+      return;
+    }
+    let porVendedor = {};
+    ventas.forEach(v => { let vend = v.vendedor || 'General'; porVendedor[vend] = (porVendedor[vend] || 0) + parseFloat(v.precio || 0); });
+    document.getElementById('resumen-vendedores').innerHTML = Object.keys(porVendedor).map(vend => `
+      <div style="background:var(--surface-2); border:1px solid var(--line); padding:14px; border-radius:8px; min-width:180px;">
+        <span style="font-size:12px; color:var(--muted);">${vend}</span>
+        <h4 style="font-size:20px; margin-top:4px; color:var(--ok);">$${porVendedor[vend].toLocaleString()}</h4>
+      </div>
+    `).join('');
+    tbody.innerHTML = ventas.map((v, i) => `
+      <tr>
+        <td>${v.fecha || '-'}</td><td><b>${v.vehiculo}</b></td><td>${v.cliente}</td><td>${v.vendedor}</td>
+        <td><span class="pill" style="background:var(--surface-2);">${v.condicion}</span></td>
+        <td><b>$${parseFloat(v.precio).toLocaleString()}</b></td>
+        <td>${v.boleto ? `<a href="${v.boleto.data}" download="${v.boleto.name}" class="doc-chip">📄 Boleto</a>` : '-'}</td>
+        <td>
+          <button class="btn" style="padding:2px 8px; font-size:12px;" onclick="editarVenta(${i})">Editar</button>
+          <button class="btn" style="padding:2px 8px; font-size:12px; color:var(--accent);" onclick="borrarVenta(${i})">Borrar</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function guardarGasto() {
+    const fecha = document.getElementById('g-fecha').value || new Date().toISOString().split('T')[0];
+    const concepto = document.getElementById('g-concepto').value;
+    const monto = parseFloat(document.getElementById('g-monto').value || 0);
+    const categoria = document.getElementById('g-categoria').value;
+    const editIdx = parseInt(document.getElementById('g-edit-index').value);
+
+    if(!concepto || !monto) return alert('Ingresa concepto y monto.');
+    let gastos = JSON.parse(localStorage.getItem('g_gastos') || '[]');
+    const gasto = { fecha, concepto, monto, categoria };
+    if(editIdx >= 0) gastos[editIdx] = gasto; else gastos.push(gasto);
+    localStorage.setItem('g_gastos', JSON.stringify(gastos));
+    limpiarGastoForm();
+    cargarGastos();
+  }
+
+  function editarGasto(idx) {
+    let gastos = JSON.parse(localStorage.getItem('g_gastos') || '[]');
+    let g = gastos[idx];
+    document.getElementById('g-edit-index').value = idx;
+    document.getElementById('g-form-title').textContent = 'Editar Gasto';
+    document.getElementById('g-fecha').value = g.fecha;
+    document.getElementById('g-concepto').value = g.concepto;
+    document.getElementById('g-monto').value = g.monto;
+    document.getElementById('g-categoria').value = g.categoria;
+    document.getElementById('g-btn-cancelar').style.display = 'inline-flex';
+    window.scrollTo(0,0);
+  }
+
+  function borrarGasto(idx) {
+    if(!confirm('¿Eliminar gasto?')) return;
+    let gastos = JSON.parse(localStorage.getItem('g_gastos') || '[]');
+    gastos.splice(idx, 1);
+    localStorage.setItem('g_gastos', JSON.stringify(gastos));
+    cargarGastos();
+  }
+
+  function limpiarGastoForm() {
+    document.getElementById('g-edit-index').value = '-1';
+    document.getElementById('g-form-title').textContent = 'Registrar Nuevo Gasto';
+    document.querySelectorAll('#fin-gastos input').forEach(i => i.value = '');
+    document.getElementById('g-btn-cancelar').style.display = 'none';
+  }
+
+  function cargarGastos() {
+    let gastos = JSON.parse(localStorage.getItem('g_gastos') || '[]');
+    let tbody = document.getElementById('tabla-gastos');
+    const cats = ['Repuestos', 'Taller', 'Pintor', 'Publicidad', 'Lavadero', 'Otros'];
+    let totales = {}; cats.forEach(c => totales[c] = 0);
+    gastos.forEach(g => { if(totales[g.categoria] !== undefined) totales[g.categoria] += g.monto; });
+    let max = Math.max(...Object.values(totales), 1);
+    document.getElementById('chart-gastos').innerHTML = cats.map(c => `
+      <div class="chart-col">
+        <small style="font-size:11px;">$${totales[c].toLocaleString()}</small>
+        <div class="chart-bar" style="height:${(totales[c]/max)*100}%;"></div>
+        <small style="font-size:11px; color:var(--muted);">${c}</small>
+      </div>
+    `).join('');
+    if(gastos.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted); text-align:center;">Sin gastos.</td></tr>'; return; }
+    tbody.innerHTML = gastos.map((g, i) => `
+      <tr>
+        <td>${g.fecha}</td><td><b>${g.concepto}</b></td><td><span class="pill" style="background:var(--surface-2);">${g.categoria}</span></td>
+        <td><b>$${g.monto.toLocaleString()}</b></td>
+        <td>
+          <button class="btn" style="padding:2px 8px; font-size:12px;" onclick="editarGasto(${i})">Editar</button>
+          <button class="btn" style="padding:2px 8px; font-size:12px; color:var(--accent);" onclick="borrarGasto(${i})">Borrar</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* --- COMPRAS --- */
+  function calcularCostoTotal() {
+    let precio = parseFloat(document.getElementById('c-precio').value || 0);
+    let gastos = parseFloat(document.getElementById('c-gastos').value || 0);
+    document.getElementById('c-total').value = (precio + gastos).toLocaleString();
+  }
+
+  function previewCompraDoc(evt) {
+    compraDocTemp = [];
+    Array.from(evt.target.files).forEach(f => {
+      const reader = new FileReader();
+      reader.onload = e => compraDocTemp.push({ name: f.name, data: e.target.result });
+      reader.readAsDataURL(f);
+    });
+  }
+
+  function guardarCompra() {
+    const vehiculo = document.getElementById('c-vehiculo').value;
+    const precio = parseFloat(document.getElementById('c-precio').value || 0);
+    const gastos = parseFloat(document.getElementById('c-gastos').value || 0);
+    const total = precio + gastos;
+    const fecha = document.getElementById('c-fecha').value || new Date().toISOString().split('T')[0];
+    const titular = document.getElementById('c-titular').value;
+    const detalles = document.getElementById('c-detalles').value;
+    const editIdx = parseInt(document.getElementById('c-edit-index').value);
+
+    if(!vehiculo || !precio) return alert('Completa vehículo y precio pagado.');
+
+    let compras = JSON.parse(localStorage.getItem('g_compras') || '[]');
+    let docs = compraDocTemp || (editIdx >= 0 ? compras[editIdx].docs : []);
+    const compra = { vehiculo, precio, gastos, total, fecha, titular, detalles, docs };
+
+    if(editIdx >= 0) compras[editIdx] = compra; else {
+      compras.push(compra);
+      let partes = vehiculo.split(' - ');
+      let patente = partes[0] ? partes[0].trim() : 'SIN-PAT';
+      let modeloCompleto = partes[1] ? partes[1].trim() : vehiculo;
+      let unidades = JSON.parse(localStorage.getItem('g_unidades') || '[]');
+      unidades.push({ patente, marca: 'Vehículo', modelo: modeloCompleto, anio: '2022', moneda: 'USD', precio: total, estado: 'Listo', foto: '', docs: docs });
+      localStorage.setItem('g_unidades', JSON.stringify(unidades));
+    }
+
+    localStorage.setItem('g_compras', JSON.stringify(compras));
+    limpiarCompraForm();
+    cargarCompras();
+    alert('¡Compra registrada y vehículo agregado al stock!');
+  }
+
+  function editarCompra(idx) {
+    let compras = JSON.parse(localStorage.getItem('g_compras') || '[]');
+    let c = compras[idx];
+    document.getElementById('c-edit-index').value = idx;
+    document.getElementById('c-form-title').textContent = 'Editar Compra';
+    document.getElementById('c-vehiculo').value = c.vehiculo;
+    document.getElementById('c-precio').value = c.precio;
+    document.getElementById('c-gastos').value = c.gastos;
+    document.getElementById('c-total').value = c.total.toLocaleString();
+    document.getElementById('c-fecha').value = c.fecha;
+    document.getElementById('c-titular').value = c.titular;
+    document.getElementById('c-detalles').value = c.detalles;
+    compraDocTemp = c.docs;
+    document.getElementById('c-btn-cancelar').style.display = 'inline-flex';
+    window.scrollTo(0,0);
+  }
+
+  function borrarCompra(idx) {
+    if(!confirm('¿Eliminar compra?')) return;
+    let compras = JSON.parse(localStorage.getItem('g_compras') || '[]');
+    compras.splice(idx, 1);
+    localStorage.setItem('g_compras', JSON.stringify(compras));
+    cargarCompras();
+  }
+
+  function limpiarCompraForm() {
+    document.getElementById('c-edit-index').value = '-1';
+    document.getElementById('c-form-title').textContent = 'Registrar Nueva Compra (Ingreso a Stock)';
+    document.querySelectorAll('#fin-compras input').forEach(i => i.value = '');
+    document.getElementById('c-btn-cancelar').style.display = 'none';
+    compraDocTemp = null;
+  }
+
+  function cargarCompras() {
+    let compras = JSON.parse(localStorage.getItem('g_compras') || '[]');
+    let tbody = document.getElementById('tabla-compras');
+    if(compras.length === 0) { tbody.innerHTML = '<tr><td colspan="8" style="color:var(--muted); text-align:center;">Sin compras.</td></tr>'; return; }
+    tbody.innerHTML = compras.map((c, i) => `
+      <tr>
+        <td>${c.fecha}</td><td><b>${c.vehiculo}</b></td><td>${c.titular || '-'}</td>
+        <td>$${c.precio.toLocaleString()}</td><td>$${c.gastos.toLocaleString()}</td>
+        <td><b>$${c.total.toLocaleString()}</b></td>
+        <td>${c.docs && c.docs.length > 0 ? c.docs.map(d => `<a href="${d.data}" download="${d.name}" class="doc-chip">📄 Doc</a>`).join(' ') : '-'}</td>
+        <td>
+          <button class="btn" style="padding:2px 8px; font-size:12px;" onclick="editarCompra(${i})">Editar</button>
+          <button class="btn" style="padding:2px 8px; font-size:12px; color:var(--accent);" onclick="borrarCompra(${i})">Borrar</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* --- CLIENTES --- */
+  function guardarCliente() {
+    const nombre = document.getElementById('cli-nombre').value;
+    const tel = document.getElementById('cli-tel').value;
+    const dni = document.getElementById('cli-dni').value;
+    const vehiculo = document.getElementById('cli-vehiculo').value;
+    const obs = document.getElementById('cli-obs').value;
+    const nota = document.getElementById('cli-nota').value;
+    const editIdx = parseInt(document.getElementById('cli-edit-index').value);
+
+    if(!nombre) return alert('Ingresa el nombre del cliente.');
+
+    let clientes = JSON.parse(localStorage.getItem('g_clientes') || '[]');
+    let historial = editIdx >= 0 ? clientes[editIdx].historial : [];
+    if(vehiculo && !historial.includes(vehiculo)) historial.push(vehiculo);
+    let notas = editIdx >= 0 ? clientes[editIdx].notas : [];
+    if(nota) notas.push({ fecha: new Date().toISOString().split('T')[0], texto: nota });
+
+    const cliente = { nombre, tel, dni, vehiculo, obs, historial, notas };
+    if(editIdx >= 0) clientes[editIdx] = cliente; else clientes.push(cliente);
+
+    localStorage.setItem('g_clientes', JSON.stringify(clientes));
+    limpiarClienteForm();
+    cargarClientes();
+    alert('¡Cliente guardado con éxito!');
+  }
+
+  function editarCliente(idx) {
+    let clientes = JSON.parse(localStorage.getItem('g_clientes') || '[]');
+    let c = clientes[idx];
+    document.getElementById('cli-edit-index').value = idx;
+    document.getElementById('cli-form-title').textContent = 'Editar Cliente';
+    document.getElementById('cli-nombre').value = c.nombre;
+    document.getElementById('cli-tel').value = c.tel;
+    document.getElementById('cli-dni').value = c.dni;
+    document.getElementById('cli-vehiculo').value = c.vehiculo;
+    document.getElementById('cli-obs').value = c.obs;
+    document.getElementById('cli-btn-cancelar').style.display = 'inline-flex';
+    window.scrollTo(0,0);
+  }
+
+  function borrarCliente(idx) {
+    if(!confirm('¿Eliminar cliente?')) return;
+    let clientes = JSON.parse(localStorage.getItem('g_clientes') || '[]');
+    clientes.splice(idx, 1);
+    localStorage.setItem('g_clientes', JSON.stringify(clientes));
+    cargarClientes();
+  }
+
+  function limpiarClienteForm() {
+    document.getElementById('cli-edit-index').value = '-1';
+    document.getElementById('cli-form-title').textContent = 'Agregar Nuevo Cliente';
+    document.querySelectorAll('#cli-todos input').forEach(i => i.value = '');
+    document.getElementById('cli-btn-cancelar').style.display = 'none';
+  }
+
+  function cargarClientes() {
+    let clientes = JSON.parse(localStorage.getItem('g_clientes') || '[]');
+    let tbody = document.getElementById('tabla-clientes');
+    if(clientes.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted); text-align:center;">Sin clientes.</td></tr>'; return; }
+    tbody.innerHTML = clientes.map((c, i) => {
+      let notasHtml = c.notas && c.notas.length > 0 ? c.notas.map(n => `<small>• ${n.fecha}: ${n.texto}</small><br>`).join('') : (c.obs || '-');
+      return `
+        <tr>
+          <td><b>${c.nombre}</b></td><td>${c.dni || '-'}</td><td>${c.tel || '-'}</td><td>${c.vehiculo || '-'}</td>
+          <td>${notasHtml}</td>
+          <td>
+            <button class="btn" style="padding:2px 8px; font-size:12px;" onclick="editarCliente(${i})">Editar</button>
+            <button class="btn" style="padding:2px 8px; font-size:12px; color:var(--accent);" onclick="borrarCliente(${i})">Borrar</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function cargarClientesDeudores() {
+    let personal = JSON.parse(localStorage.getItem('g_personal') || '[]');
+    let tbody = document.getElementById('tabla-clientes-deudores');
+    if(personal.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted); text-align:center;">No hay clientes deudores.</td></tr>'; return; }
+    tbody.innerHTML = personal.map(p => `
+      <tr>
+        <td><b>${p.cliente}</b></td><td>${p.vehiculo}</td><td><span class="pill" style="background:var(--warn-bg); color:var(--warn);">Financiación Personal</span></td>
+        <td>Saldo: $${parseFloat(p.monto).toLocaleString()}</td><td>${p.tel || 'Sin tel'}</td>
+      </tr>
+    `).join('');
+  }
+
+  /* --- CRÉDITOS --- */
+  function guardarPrendario() {
+    const vehiculo = document.getElementById('cp-vehiculo').value;
+    const cliente = document.getElementById('cp-cliente').value;
+    const financiera = document.getElementById('cp-financiera').value;
+    const estado = document.getElementById('cp-estado').value;
+    const pagado = document.getElementById('cp-pagado').value;
+    const cuenta = document.getElementById('cp-cuenta').value;
+
+    if(!cliente || !financiera) return alert('Completa cliente y financiera.');
+    let prendarios = JSON.parse(localStorage.getItem('g_prendarios') || '[]');
+    prendarios.push({ vehiculo, cliente, financiera, estado, pagado, cuenta });
+    localStorage.setItem('g_prendarios', JSON.stringify(prendarios));
+    document.querySelectorAll('#cred-prendarios input').forEach(i => i.value = '');
+    cargarPrendarios();
+    alert('Crédito prendario guardado.');
+  }
+
+  function cargarPrendarios() {
+    let prendarios = JSON.parse(localStorage.getItem('g_prendarios') || '[]');
+    let tbody = document.getElementById('tabla-prendarios');
+    if(prendarios.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted); text-align:center;">Sin créditos prendarios.</td></tr>'; return; }
+    tbody.innerHTML = prendarios.map(p => `
+      <tr>
+        <td><b>${p.vehiculo}</b></td><td>${p.cliente}</td><td>${p.financiera}</td><td>${p.estado}</td>
+        <td><span class="pill" style="background:${p.pagado==='Si'?'var(--ok-bg)':'var(--warn-bg)'}; color:${p.pagado==='Si'?'var(--ok)':'var(--warn)'};">${p.pagado}</span></td>
+        <td>${p.cuenta || '-'}</td>
+      </tr>
+    `).join('');
+  }
+
+  function guardarPersonal() {
+    const cliente = document.getElementById('fp-cliente').value;
+    const tel = document.getElementById('fp-tel').value;
+    const vehiculo = document.getElementById('fp-vehiculo').value;
+    const plazo = document.getElementById('fp-plazo').value;
+    const garantia = document.getElementById('fp-garantia').value;
+    const monto = document.getElementById('fp-monto').value;
+    const vencimiento = document.getElementById('fp-vencimiento').value;
+    const nota = document.getElementById('fp-nota').value;
+
+    if(!cliente || !monto) return alert('Completa cliente y monto.');
+    let personal = JSON.parse(localStorage.getItem('g_personal') || '[]');
+    personal.push({ cliente, tel, vehiculo, plazo, garantia, monto, vencimiento, nota });
+    localStorage.setItem('g_personal', JSON.stringify(personal));
+    document.querySelectorAll('#cred-personal input').forEach(i => i.value = '');
+    cargarPersonal();
+    alert('Financiación personal guardada.');
+  }
+
+  function cargarPersonal() {
+    let personal = JSON.parse(localStorage.getItem('g_personal') || '[]');
+    let tbody = document.getElementById('tabla-personal');
+    if(personal.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="color:var(--muted); text-align:center;">Sin financiación personal.</td></tr>'; return; }
+    tbody.innerHTML = personal.map(p => `
+      <tr>
+        <td><b>${p.cliente}</b></td><td>${p.vehiculo}</td><td>${p.plazo}</td><td>${p.garantia}</td>
+        <td><b>$${parseFloat(p.monto).toLocaleString()}</b></td><td>${p.vencimiento || '-'}</td><td>${p.nota || '-'}</td>
+      </tr>
+    `).join('');
+  }
+
+  function cargarSaldos() {
+    let personal = JSON.parse(localStorage.getItem('g_personal') || '[]');
+    let tbody = document.getElementById('tabla-saldos');
+    let hoy = new Date();
+
+    if(personal.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted); text-align:center;">No hay registros de saldos.</td></tr>'; return; }
+
+    tbody.innerHTML = personal.map(p => {
+      let venc = p.vencimiento ? new Date(p.vencimiento) : hoy;
+      let diffDays = Math.floor((hoy - venc) / (1000 * 60 * 60 * 24));
+      let alertaWp = '';
+
+      if(diffDays > 10) {
+        let msg = encodeURIComponent(`Hola ${p.cliente}, te escribimos de Galponcars Automotores para recordarte que posees un saldo pendiente de $${parseFloat(p.monto).toLocaleString()} con un atraso de ${diffDays} días.`);
+        let telClean = (p.tel || '').replace(/\D/g, '');
+        alertaWp = `<a href="https://wa.me/${telClean}?text=${msg}" target="_blank" class="btn-whatsapp">💬 Enviar WhatsApp (+10 días)</a>`;
+      } else {
+        alertaWp = '<span style="color:var(--muted); font-size:12px;">Al día / < 10 días</span>';
+      }
+
+      return `
+        <tr>
+          <td><b>${p.cliente}</b></td><td>${p.tel || '-'}</td><td>${p.vehiculo}</td>
+          <td><b>$${parseFloat(p.monto).toLocaleString()}</b></td><td>${p.vencimiento || '-'}</td><td>${alertaWp}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  /* --- TRÁMITES Y GESTORÍA --- */
+  function guardarTramiteGestoria() {
+    const vehiculo = document.getElementById('tg-vehiculo').value;
+    const tramite = document.getElementById('tg-tramite').value;
+    const gestor = document.getElementById('tg-gestor').value;
+    const estado = document.getElementById('tg-estado').value;
+    const obs = document.getElementById('tg-obs').value;
+
+    if(!vehiculo || !tramite) return alert('Completa vehículo y trámite.');
+    let tramites = JSON.parse(localStorage.getItem('g_tramites_gestoria') || '[]');
+    tramites.push({ vehiculo, tramite, gestor, estado, obs });
+    localStorage.setItem('g_tramites_gestoria', JSON.stringify(tramites));
+    document.querySelectorAll('#tram-gestion input').forEach(i => i.value = '');
+    cargarTramitesGestion();
+    alert('Trámite guardado.');
+  }
+
+  function cargarTramitesGestion() {
+    let tramites = JSON.parse(localStorage.getItem('g_tramites_gestoria') || '[]');
+    let tbody = document.getElementById('tabla-tramites-gestion');
+    if(tramites.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted); text-align:center;">Sin trámites registrados.</td></tr>'; return; }
+    tbody.innerHTML = tramites.map(t => {
+      let pillBg = t.estado === 'Retirado' ? 'var(--ok-bg)' : (t.estado === 'Presentado' ? 'var(--warn-bg)' : 'var(--surface-2)');
+      let pillColor = t.estado === 'Retirado' ? 'var(--ok)' : (t.estado === 'Presentado' ? 'var(--warn)' : 'var(--muted)');
+      return `
+        <tr>
+          <td><b>${t.vehiculo}</b></td><td>${t.tramite}</td><td>${t.gestor || '-'}</td>
+          <td><span class="pill" style="background:${pillBg}; color:${pillColor};">${t.estado}</span></td>
+          <td>${t.obs || '-'}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function guardarEscribania() {
+    const nombre = document.getElementById('esc-nombre').value;
+    const vehiculo = document.getElementById('esc-vehiculo').value;
+    const acta = document.getElementById('esc-acta').value;
+    const libro = document.getElementById('esc-libro').value;
+    const fecha = document.getElementById('esc-fecha').value;
+
+    if(!nombre || !acta) return alert('Completa cliente y acta/folio.');
+    let esc = JSON.parse(localStorage.getItem('g_escribania') || '[]');
+    esc.push({ nombre, vehiculo, acta, libro, fecha });
+    localStorage.setItem('g_escribania', JSON.stringify(esc));
+    document.querySelectorAll('#tram-escribania input').forEach(i => i.value = '');
+    cargarEscribania();
+    alert('Registro de escribanía guardado.');
+  }
+
+  function cargarEscribania() {
+    let esc = JSON.parse(localStorage.getItem('g_escribania') || '[]');
+    let tbody = document.getElementById('tabla-escribania');
+    if(esc.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="color:var(--muted); text-align:center;">Sin registros de escribanía.</td></tr>'; return; }
+    tbody.innerHTML = esc.map(e => `
+      <tr>
+        <td><b>${e.nombre}</b></td><td>${e.vehiculo || '-'}</td><td>${e.acta}</td><td>${e.libro || '-'}</td><td>${e.fecha || '-'}</td>
+      </tr>
+    `).join('');
+  }
+
+  function guardarDocPendiente() {
+    const vehiculo = document.getElementById('dp-vehiculo').value;
+    const faltante = document.getElementById('dp-faltante').value;
+    const responsable = document.getElementById('dp-responsable').value;
+
+    if(!vehiculo || !faltante) return alert('Completa vehículo y documentación faltante.');
+    let docs = JSON.parse(localStorage.getItem('g_doc_pendientes') || '[]');
+    docs.push({ vehiculo, faltante, responsable });
+    localStorage.setItem('g_doc_pendientes', JSON.stringify(docs));
+    document.querySelectorAll('#tram-pendientes input').forEach(i => i.value = '');
+    cargarDocPendientes();
+    alert('Documentación pendiente guardada.');
+  }
+
+  function cargarDocPendientes() {
+    let docs = JSON.parse(localStorage.getItem('g_doc_pendientes') || '[]');
+    let tbody = document.getElementById('tabla-pendientes');
+    if(docs.length === 0) { tbody.innerHTML = '<tr><td colspan="3" style="color:var(--muted); text-align:center;">Sin documentación pendiente.</td></tr>'; return; }
+    tbody.innerHTML = docs.map(d => `
+      <tr>
+        <td><b>${d.vehiculo}</b></td><td><span class="pill" style="background:var(--danger-bg); color:var(--danger);">${d.faltante}</span></td><td>${d.responsable || '-'}</td>
+      </tr>
+    `).join('');
+  }
+
+  function previewDominio(evt) {
+    const file = evt.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      dominioTemp = { name: file.name, data: e.target.result };
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function guardarDominio() {
+    const vehiculo = document.getElementById('dom-vehiculo').value;
+    if(!vehiculo || !dominioTemp) return alert('Ingresa el vehículo y adjunta el archivo PDF/imagen.');
+
+    let dominios = JSON.parse(localStorage.getItem('g_dominios') || '[]');
+    dominios.push({ vehiculo, file: dominioTemp });
+    localStorage.setItem('g_dominios', JSON.stringify(dominios));
+    document.getElementById('dom-vehiculo').value = '';
+    document.getElementById('dom-file').value = '';
+    dominioTemp = null;
+    cargarDominios();
+    alert('Informe de dominio guardado.');
+  }
+
+  function cargarDominios() {
+    let dominios = JSON.parse(localStorage.getItem('g_dominios') || '[]');
+    let tbody = document.getElementById('tabla-dominios');
+    if(dominios.length === 0) { tbody.innerHTML = '<tr><td colspan="2" style="color:var(--muted); text-align:center;">Sin informes de dominio.</td></tr>'; return; }
+    tbody.innerHTML = dominios.map(d => `
+      <tr>
+        <td><b>${d.vehiculo}</b></td>
+        <td><a href="${d.file.data}" download="${d.file.name}" class="doc-chip">📄 ${d.file.name}</a></td>
+      </tr>
+    `).join('');
+  }
+
+  function guardarPolicial() {
+    const vehiculo = document.getElementById('vp-vehiculo').value;
+    const fecha = document.getElementById('vp-fecha').value;
+    const vencimiento = document.getElementById('vp-vencimiento').value;
+
+    if(!vehiculo || !vencimiento) return alert('Completa vehículo y fecha de vencimiento.');
+    let policial = JSON.parse(localStorage.getItem('g_policial') || '[]');
+    policial.push({ vehiculo, fecha, vencimiento });
+    localStorage.setItem('g_policial', JSON.stringify(policial));
+    document.querySelectorAll('#tram-policial input').forEach(i => i.value = '');
+    cargarPolicial();
+    alert('Verificación policial guardada.');
+  }
+
+  function cargarPolicial() {
+    let policial = JSON.parse(localStorage.getItem('g_policial') || '[]');
+    let tbody = document.getElementById('tabla-policial');
+    let hoy = new Date();
+
+    if(policial.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="color:var(--muted); text-align:center;">Sin verificaciones policiales.</td></tr>'; return; }
+
+    tbody.innerHTML = policial.map(p => {
+      let venc = p.vencimiento ? new Date(p.vencimiento) : hoy;
+      let diffDays = Math.floor((venc - hoy) / (1000 * 60 * 60 * 24));
+      let badge = '';
+
+      if(diffDays < 0) {
+        badge = '<span class="pill" style="background:var(--danger-bg); color:var(--danger);">⚠️ VENCIDA</span>';
+      } else if(diffDays <= 10) {
+        badge = `<span class="pill" style="background:var(--warn-bg); color:var(--warn);">⚠️ VENCE EN ${diffDays} DÍAS (Alerta Tablero)</span>`;
+      } else {
+        badge = `<span class="pill" style="background:var(--ok-bg); color:var(--ok);">Vigente (${diffDays} días restantes)</span>`;
+      }
+
+      return `
+        <tr>
+          <td><b>${p.vehiculo}</b></td><td>${p.fecha || '-'}</td><td>${p.vencimiento || '-'}</td><td>${badge}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // Inicialización global
+  cargarUnidades();
+</script>
+
+</body>
+</html>
